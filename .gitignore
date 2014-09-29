@@ -61,4 +61,4 @@ Makefile
 etc/*
 openerp-command/*
 upgrade.py
-
+buildout.cfg
