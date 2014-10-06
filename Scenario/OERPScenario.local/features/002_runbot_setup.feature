@@ -1,4 +1,4 @@
-@setup @config
+@setup @runbot_config
 
 Feature: configure the runbot
   Scenario: setup repo for OCB
