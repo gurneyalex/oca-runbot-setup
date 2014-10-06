@@ -39,8 +39,9 @@ function create_virtualenv() {
 #    else
         ${virtualenv} ${options} sandbox
 	./sandbox/bin/pip install -U setuptools
-        ./sandbox/bin/pip install numpy six python-dateutil tornado pyparsing
-	./sandbox/bin/pip install matplotlib
+        ./sandboc/bin/pip install -U pip
+#        ./sandbox/bin/pip install  --find-link=http://download.gna.org/pychart/ PyChart
+        ./sandbox/bin/pip install  --find-link=http://download.gna.org/pychart/ -r requirements.txt
 #        ./sandbox/bin/pip uninstall -y setuptools
 #    fi
 }
