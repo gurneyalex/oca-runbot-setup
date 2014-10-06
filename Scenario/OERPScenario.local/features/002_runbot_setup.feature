@@ -101,3 +101,41 @@ Feature: configure the runbot
     | web                         |
     | webkit-tools                |
     | webkit-utils                |
+
+    Scenario Outline: Additional Dependencies
+      Given I find a "runbot.repo" with name: https://github.com/OCA/<name>
+      And having:
+      | name           | value                                             |
+      | dependency_ids | add all by name: https://github.com/OCA/<depname> |
+
+      Examples:
+      | name                        | depname                   |
+      | account-financial-reporting | reporting-engine          |
+      | account-financial-tools     | reporting-engine          |
+      | account-financial-tools     | connector                 |
+      | account-invoicing           | product-attribute         |
+      | account-invoicing           | account-financial-tools   |
+      | account-invoicing           | stock-logistics-workflow  |
+      | connector-ecommerce         | connector                 |
+      | e-commerce                  | sale-workflow             |
+      | l10n-belgium                | bank-statement-reconcile  |
+      | l10n-canada                 | account-fiscal-rule       |
+      | l10n-italy                  | account-invoicing         |
+      | l10n-italy                  | account-financial-tools   |
+      | l10n-italy                  | webkit-tools              |
+      | l10n-italy                  | account-payment           |
+      | l10n-italy                  | partner-contact           |
+      | product-kitting             | stock-logistics-warehouse |
+      | purchase-reporting          | webkit-tools              |
+      | sale-reporting              | account-invoice-reporting |
+      | sale-reporting              | webkit-tools              |
+      | sale-workflow               | product-attribute         |
+      | stock-logistics-tracking    | stock-logistics-barcode   |
+      | stock-logistics-warehouse   | stock-logistics-tracking  |
+      | stock-logistics-warehouse   | stock-logistics-barcode   |
+      | stock-logistics-workflow    | product-attribute         |
+      | stock-logistics-workflow    | webkit-tools              |
+      | stock-logistics-workflow    | stock-logistics-warehouse  |
+      | vertical-ngo                | sale-workflow             |
+      | vertical-travel             | partner-contact           |
+      | vertical-travel             | hr                        |
