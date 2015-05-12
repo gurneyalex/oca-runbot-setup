@@ -49,7 +49,7 @@ Feature: configure the runbot
     | crm                         |
     | department                  |
     | e-commerce                  |
-    | france                      |
+    | l10n-france                 |
     | geospatial                  |
     | hr                          |
     | hr-timesheet                |
@@ -91,7 +91,6 @@ Feature: configure the runbot
     | stock-logistics-tracking    |
     | stock-logistics-warehouse   |
     | stock-logistics-workflow    |
-    | team_leaders.ods            |
     | vertical-construction       |
     | vertical-hotel              |
     | vertical-isp                |
