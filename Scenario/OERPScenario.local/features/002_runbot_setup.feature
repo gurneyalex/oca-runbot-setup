@@ -106,7 +106,7 @@ Feature: configure the runbot
       Given I find a "runbot.repo" with name: https://github.com/OCA/<name>
       And having:
       | name           | value                                             |
-      | dependency_ids | add all by name: https://github.com/OCA/<depname> |
+      | dependency_ids | by name: https://github.com/OCA/<depname> |
 
       Examples:
       | name                        | depname                   |
