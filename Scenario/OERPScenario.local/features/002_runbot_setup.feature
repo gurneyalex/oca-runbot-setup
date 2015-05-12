@@ -8,6 +8,7 @@ Feature: configure the runbot
   | name    | https://github.com/OCA/OCB |
   | testing |                          1 |
   | running |                          1 |
+  | nginx   |                          1 |
   | auto    |                          1 |
 
   Scenario Outline: setup the repositories
@@ -18,6 +19,7 @@ Feature: configure the runbot
     | testing        |                                   1 |
     | running        |                                   1 |
     | auto           |                                   1 |
+    | nginx          |                                   1 |
     | dependency_ids | by name: https://github.com/OCA/OCB |
 
     Examples:

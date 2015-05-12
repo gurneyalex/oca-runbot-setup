@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <template id="runbot.nginx_config">
+server_names_hash_max_size 2048;
+server_names_hash_bucket_size 256;
+client_max_body_size 10M;
+index index.html;
+log_format full '$remote_addr - $remote_user [$time_local] '
+                '"$request" $status $body_bytes_sent '
+                '"$http_referer" "$http_user_agent" $request_time';
+autoindex on;
+
+gzip on;
+gzip_types text/css text/plain application/xml application/json application/javascript;
+
+<t t-foreach="builds" t-as="build">
+server {
+    listen 443;
+    server_name ~^<t t-esc="build.dest"/>[-.].*$;
+    location / { proxy_pass http://127.0.0.1:<t t-esc="build.port"/>; }
+    location /longpolling { proxy_pass http://127.0.0.1:<t t-esc="build.port + 1"/>; }
+    ssl_certificate /etc/nginx/ssl/site.bundle.crt;
+    ssl_certificate_key /etc/nginx/ssl/site.key;
+}
+</t>
+
+    </template>
+
+  </data>
+</openerp>
