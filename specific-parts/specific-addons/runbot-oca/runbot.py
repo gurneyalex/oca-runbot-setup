@@ -1,15 +1,13 @@
+import os
+import logging
 
-from openerp import models, api
 import openerp
 from openerp import http, SUPERUSER_ID
 from openerp.http import request
 from openerp.osv import fields, osv
 from openerp.tools import config, appdirs
-from openerp.addons.website.models.website import slug
-from openerp.addons.website_sale.controllers.main import QueryURL
 
 from openerp.addons.runbot.runbot import mkdirs, run
-import os
 _logger = logging.getLogger(__name__)
 
 
