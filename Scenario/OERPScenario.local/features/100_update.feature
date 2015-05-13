@@ -1,4 +1,4 @@
-@update1
+@runbot_update1
 
 Feature: update the instance
  @no_login

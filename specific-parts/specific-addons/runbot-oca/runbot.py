@@ -1,11 +1,22 @@
 
 from openerp import models, api
+import openerp
+from openerp import http, SUPERUSER_ID
+from openerp.http import request
+from openerp.osv import fields, osv
+from openerp.tools import config, appdirs
+from openerp.addons.website.models.website import slug
+from openerp.addons.website_sale.controllers.main import QueryURL
 
-class runbot_repo(models.Model):
+from openerp.addons.runbot.runbot import mkdirs, run
+import os
+_logger = logging.getLogger(__name__)
+
+
+class runbot_repo(osv.osv):
     _inherit = "runbot.repo"
-    
-    @api.model
-    def reload_nginx(self):
+
+    def reload_nginx(self, cr, uid, context=None):
         """
         completely override the method
         """
@@ -22,4 +33,4 @@ class runbot_repo(models.Model):
             mkdirs([nginx_dir])
             open(os.path.join(nginx_dir, 'nginx.conf'),'w').write(nginx_config)
             _logger.debug('reload nginx')
-            run(['sudo', '/usr/sbin/service', 'reload', 'nginx'])
+            run(['sudo', '/usr/sbin/service', 'nginx', 'reload'])

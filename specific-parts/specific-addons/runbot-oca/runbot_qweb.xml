@@ -3,17 +3,17 @@
   <data>
 
     <template id="runbot.nginx_config">
-server_names_hash_max_size 2048;
-server_names_hash_bucket_size 256;
-client_max_body_size 10M;
+#server_names_hash_max_size 2048;
+#server_names_hash_bucket_size 256;
+#client_max_body_size 10M;
 index index.html;
 log_format full '$remote_addr - $remote_user [$time_local] '
                 '"$request" $status $body_bytes_sent '
                 '"$http_referer" "$http_user_agent" $request_time';
 autoindex on;
 
-gzip on;
-gzip_types text/css text/plain application/xml application/json application/javascript;
+#gzip on;
+#gzip_types text/css text/plain application/xml application/json application/javascript;
 
 <t t-foreach="builds" t-as="build">
 server {
