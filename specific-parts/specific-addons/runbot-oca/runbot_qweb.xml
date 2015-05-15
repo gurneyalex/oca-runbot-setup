@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
-    <template inherit_id='runbot.build'>
+    <template id='runbot_build' name='runbot.build' inherit_id='runbot.build'>
       <!-- let the rebuild button be visible when the build is not running,
       regardless of the `ask_rebuild` request parameter -->
       <xpath expr='//form[@t-if="request.params.get(&apos;ask_rebuild&apos;)"]'
