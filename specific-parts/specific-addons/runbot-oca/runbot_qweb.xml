@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
+    <template inherit_id='runbot.build'>
+      <!-- let the rebuild button be visible when the build is not running,
+      regardless of the `ask_rebuild` request parameter -->
+      <xpath expr='//form[@t-if="request.params.get(&apos;ask_rebuild&apos;)"]'
+             position="attributes">
+        <attribute name='t-if'>request.params.get(&apos;ask_rebuild&apos;) or build['state'] != 'running'</attribute>
+      </xpath>
+    </template>
 
     <template id="runbot.nginx_config">
 #server_names_hash_max_size 2048;
