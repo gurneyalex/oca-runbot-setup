@@ -1,0 +1,39 @@
+#! /usr/bin/python
+from collections import defaultdict
+addons_repo = {}
+addons_deps = defaultdict(list)
+addons_ext_deps = defaultdict(list)
+import os
+for path, dirnames, filenames in os.walk('.'):
+    if path.endswith('ocb') or path.endswith('OCB') or path.endswith('/addons') or path.endswith('.git'):
+        del dirnames[:]
+        continue
+    if '__unported__' in dirnames:
+        dirnames.remove('__unported__')
+    if '__openerp__.py' in filenames:
+        del dirnames[:] # stop recursion
+        repo, addon = os.path.split(path)
+        addons_repo[addon] = repo
+        with open(os.path.join(path, '__openerp__.py')) as f:
+            try:
+                meta = eval(f.read())
+            except SyntaxError:
+                print 'Syntax Error', repo, addon
+                continue
+        if meta.get('depends'):
+            addons_deps[addon] += meta.get('depends', [])
+        if meta.get('external_dependencies', {}).get('python'):
+            addons_ext_deps[addon] += meta['external_dependencies']['python']
+
+repo_deps = defaultdict(set)
+repo_python_deps = defaultdict(set)
+for addon, repo in addons_repo.iteritems():
+    for dep in addons_deps.get(addon, []):
+        if dep in addons_repo and addons_repo[dep] != repo:
+            repo_deps[repo].add(addons_repo[dep])
+    for dep in addons_ext_deps.get(addon, []):
+        repo_python_deps[repo].add(dep)
+
+from pprint import pprint
+pprint(dict(repo_deps))
+pprint(dict(repo_python_deps))

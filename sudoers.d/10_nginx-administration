@@ -1,0 +1,3 @@
+User_Alias NGINX_ADMIN = %nginx-admin, openerp
+Cmnd_Alias NGINX_ADMIN = /etc/init.d/nginx, /usr/sbin/service nginx reload
+NGINX_ADMIN ALL=(root) NOPASSWD: NGINX_ADMIN

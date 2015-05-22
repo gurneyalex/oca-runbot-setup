@@ -1,0 +1,98 @@
+Setup a new runbot
+==================
+
+install debian (see apt-get.txt)
+
+add to /etc/hosts
+
+    85.10.204.136 oca.odoo-community.org
+
+
+User config
+------------
+
+As root:
+
+adduser openerp  --home /srv/openerp
+addgroup nginx-admin
+addgroup openerp-admin
+addgroup openerp adm
+addgroup postgresql-admin
+addgroup openerp openerp-admin
+addgroup openerp postgresql-admin
+addgroup openerp nginx-admin
+
+Postgresql config
+-----------------
+
+Run
+pg_createcluster -p 5432
+
+Append the file  postgresql.conf at the end of the generated postgresql.conf file
+Restart server.
+
+On OCA server:
+
+add line in pg_hba.conf:
+
+hostssl  openerp-oca-runbot,postgres  openerp-oca-runbot  AAA.AAA.AAA.AAA/32 md5
+
+Runbot config
+-------------
+
+as openerp
+
+    mkdir ~/instances
+    cd instances
+    git clone  git@github.com:gurneyalex/oca-runbot-setup.git  openerp-oca-runbot
+    cd openerp-oca-runbot
+
+Create a file buildout.cfg
+
+    [buildout]
+    extends = base.cfg
+    
+    [openerp]
+    options.db_password = <password on oca runbot database>
+    options.db_user = openerp-oca-runbot
+    options.admin_login_password = <password on oca runbot instance>
+    options.db_host = oca.odoo-community.org
+    options.db_name = openerp-oca-runbot
+    options.workers = 4
+
+Run:
+    ./bootstrap.sh
+    bin/buildout
+    install -d parts/odoo-extra/runbot/static/nginx
+    touch parts/odoo-extra/runbot/static/nginx/nginx.conf
+
+gevent fix:
+
+    sed -i s/PROTOCOL_SSLv3/PROTOCOL_SSLv23/ sandbox/lib/python2.7/site-packages/gevent/ssl.py
+
+Nginx config
+------------
+
+As root, copy the files in nginx-sites-available to /etc/nginx/sites-available,
+Restart serveredit them to change 'runbot2.odoo-community.org' to the fqdn of
+Restart serverthe new server, then run
+
+    cd /etc/nginx/sites-enabled
+    rm default
+    ln -s /etc/nginx/sites-available/proxy-runbot-prod.conf
+    ln -s /etc/nginx/sites-available/runbot-80.conf
+    ln -s /srv/openerp/instances/openerp-oca-runbot/parts/odoo-extra/runbot/static/nginx/nginx.conf runbot.conf
+
+Create the site.bundle.crt and site.key files in /etc/nginx/ssl. Then run:
+
+    service nginx restart
+
+sudo config
+-----------
+
+as root copy the files in sudoers.d to /etc/sudoers.d and run
+
+   chmod 440 /etc/sudoers.d/*
+   sudo -V # check for errors
+
+

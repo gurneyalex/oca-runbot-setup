@@ -1,0 +1,55 @@
+#!/usr/bin/python
+
+import subprocess
+import os
+import time
+
+SUPERVISOR_PATH = os.path.expanduser('~/instances/openerp-oca-runbot/bin/')
+SUPERVISORD = os.path.join(SUPERVISOR_PATH, 'supervisord')
+SUPERVISORCTL = os.path.join(SUPERVISOR_PATH, 'supervisorctl')
+BUILDS_DIR = os.path.expanduser('~/instances/openerp-oca-runbot/parts/odoo-extra/runbot/static/build')
+
+def dropdb():
+    pipe = subprocess.Popen(['psql', '-l'], stdout=subprocess.PIPE)
+    for line in pipe.stdout:
+        fields = line.split('|')
+        if len(fields) != 6:
+            continue
+        dbname = fields[0].strip()
+        owner = fields[1].strip()
+        if owner != 'openerp':
+            continue
+        if not dbname.split('-')[0].isdigit():
+            continue
+        print 'dropdb', dbname
+        subprocess.call(['dropdb', dbname])
+
+def stop_instances():
+    print SUPERVISORCTL
+    subprocess.call([SUPERVISORCTL, 'shutdown'])
+    subprocess.call(['pkill', '-u', 'openerp', '-f', '/srv/openerp/instances/openerp-oca-runbot/sandbox/bin/python'])
+    time.sleep(10)  # leave time for the processes to shutdown before SIGKILL
+    subprocess.call(['pkill', '-9', '-u', 'openerp', '-f', '/srv/openerp/instances/openerp-oca-runbot/sandbox/bin/python'])
+
+
+def start_instances():
+    subprocess.call([SUPERVISORD])
+
+def clean_builds():
+    subprocess.call(['psql', 'openerp-oca-runbot', '-c', "UPDATE runbot_build SET state = 'done' WHERE state != 'done';"])
+    for dirname in os.listdir(BUILDS_DIR):
+        build_dir = os.path.join(BUILDS_DIR, dirname)
+        for name in os.listdir(build_dir):
+            if name == 'logs': 
+                continue
+            fullpath = os.path.join(build_dir, name)
+            subprocess.call(['rm', '-rf', fullpath])
+
+def main():
+    stop_instances()
+    dropdb()
+    clean_builds()
+    start_instances()
+
+if __name__ == '__main__':
+    main()

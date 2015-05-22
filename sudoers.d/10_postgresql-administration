@@ -1,0 +1,3 @@
+User_Alias POSTGRESQL_ADMIN = %postgresql-admin, openerp
+Cmnd_Alias POSTGRESQL_ADMIN = /etc/init.d/postgresql, /etc/init.d/postgresql-*, /bin/su postgres, /bin/su - postgres
+POSTGRESQL_ADMIN ALL=(postgres) ALL : ALL=(root) NOPASSWD: POSTGRESQL_ADMIN
