@@ -7,7 +7,7 @@ from openerp.http import request
 from openerp.osv import fields, osv
 from openerp.tools import config, appdirs
 
-from openerp.addons.runbot.runbot import mkdirs, run
+from openerp.addons.runbot.runbot import mkdirs, run, fqdn
 _logger = logging.getLogger(__name__)
 
 
@@ -32,3 +32,9 @@ class runbot_repo(osv.osv):
             open(os.path.join(nginx_dir, 'nginx.conf'),'w').write(nginx_config)
             _logger.debug('reload nginx')
             run(['sudo', '/usr/sbin/service', 'nginx', 'reload'])
+
+    def cron(self, cr, uid, ids=None, context=None):
+        if fqdn() == 'runbot.odoo-communty.org':
+            # phase out builds on main server
+            return
+        return super(runbot_repo, self).cron(cr, uid, ids, context=context)
