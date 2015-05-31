@@ -27,15 +27,23 @@ autoindex on;
 server {
     listen [::]:443 ssl;
     server_name ~^<t t-esc="build.dest"/>[-.].*$;
-    location / { proxy_pass http://127.0.0.1:<t t-esc="build.port"/>; }
-    location /longpolling { proxy_pass http://127.0.0.1:<t t-esc="build.port + 1"/>; }
+    location / {
+        proxy_pass http://localhost:<t t-esc="build.port"/>;
+        proxy_redirect http://localhost:<t t-esc="build.port"/>/ https://$host:$server_port/;
+        proxy_set_header Host $host;
+    }
+    location /longpolling { proxy_pass http://localhost:<t t-esc="build.port + 1"/>; }
     ssl_certificate /etc/nginx/ssl/site.bundle.crt;
     ssl_certificate_key /etc/nginx/ssl/site.key;
 }
 server {
     listen [::]:80;
     server_name ~^<t t-esc="build.dest"/>[-.].*$;
-    location / { proxy_pass http://127.0.0.1:<t t-esc="build.port"/>; }
+    location / {
+        proxy_pass http://localhost:<t t-esc="build.port"/>;
+        proxy_redirect http://localhost:<t t-esc="build.port"/>/ http://$host:$server_port/;
+        proxy_set_header Host $host;
+    }
     location /longpolling { proxy_pass http://127.0.0.1:<t t-esc="build.port + 1"/>; }
 }
 </t>
