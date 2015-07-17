@@ -55,3 +55,6 @@ class RunbotBuild(models.Model):
                                    'server_environment_files')
             if osp.isdir(dirname):
                 os.rename(dirname, dirname_new)
+        rcfile = osp.expanduser('~/.openerp_serverrc')
+        with open(rcfile, 'w') as fobj:
+            fobj.write('[options]\nrunning_env = dev\n')
