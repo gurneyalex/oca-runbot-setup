@@ -1,17 +1,19 @@
 import os
+import os.path as osp
 import logging
 
 import openerp
 from openerp import http, SUPERUSER_ID
 from openerp.http import request
-from openerp.osv import fields, osv
+from openerp.osv import orm
+from openerp import fields, models, api
 from openerp.tools import config, appdirs
 
 from openerp.addons.runbot.runbot import mkdirs, run, fqdn
 _logger = logging.getLogger(__name__)
 
 
-class runbot_repo(osv.osv):
+class RunbotRepo(orm.Model):
     _inherit = "runbot.repo"
 
     def reload_nginx(self, cr, uid, context=None):
@@ -38,3 +40,18 @@ class runbot_repo(osv.osv):
             # phase out builds on main server
             return
         return super(runbot_repo, self).cron(cr, uid, ids, context=context)
+
+
+class RunbotBuild(models.Model):
+    _inherit = 'runbot.build'
+
+    @api.multi
+    def checkout(self):
+        super(RunbotBuild, self).checkout()
+        for build in self:
+            dirname = osp.join(build.server('addons'),
+                               'server_environment_files_sample')
+            dirname_new = osp.join(build.server('addons'),
+                                   'server_environment_files')
+            if osp.isdir(dirname):
+                os.rename(dirname, dirname_new)
