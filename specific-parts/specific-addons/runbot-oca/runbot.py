@@ -39,7 +39,7 @@ class RunbotRepo(orm.Model):
         if fqdn() == 'runbot.odoo-communty.org':
             # phase out builds on main server
             return
-        return super(runbot_repo, self).cron(cr, uid, ids, context=context)
+        return super(RunbotRepo, self).cron(cr, uid, ids, context=context)
 
 
 class RunbotBuild(models.Model):
