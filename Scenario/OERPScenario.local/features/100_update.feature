@@ -10,9 +10,9 @@ Feature: update the instance
 
 Scenario: install modules
   Given I install the required modules with dependencies:
-  | name          |
-  | runbot_custom |
-  | runbot-secure |
-  | runbot-oca    |
+  | name              |
+  | runbot-oca        |
+  | runbot_secure     |
+  | runbot_skip_tests |
 
 

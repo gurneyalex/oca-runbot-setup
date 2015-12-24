@@ -42,6 +42,13 @@ class RunbotRepo(orm.Model):
         return super(RunbotRepo, self).cron(cr, uid, ids, context=context)
 
 
+class RunbotBranch(models.Model):
+    _inherit = 'runbot.branch'
+
+    repo_name = fields.Char(string='Repo Name',
+                            related='repo_id.name')
+
+
 class RunbotBuild(models.Model):
     _inherit = 'runbot.build'
 

@@ -1,5 +1,6 @@
-@setup
-Feature: install the required modules
+@runbot_update2
+
+Feature: update the instance
 
 Scenario: install modules
   Given I install the required modules with dependencies:
@@ -7,4 +8,6 @@ Scenario: install modules
   | runbot-oca        |
   | runbot_secure     |
   | runbot_skip_tests |
+  | runbot            |
+
 
