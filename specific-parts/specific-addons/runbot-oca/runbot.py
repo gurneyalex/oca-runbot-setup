@@ -16,8 +16,6 @@ _logger = logging.getLogger(__name__)
 class RunbotRepo(orm.Model):
     _inherit = "runbot.repo"
 
-    active = fields.Boolean(default=lambda s: True)
-
     def reload_nginx(self, cr, uid, context=None):
         """
         completely override the method
@@ -49,12 +47,10 @@ class RunbotBranch(models.Model):
 
     repo_name = fields.Char(string='Repo Name',
                             related='repo_id.name')
-    active = fields.Boolean(related='repo_id.active', store=True)
 
 
 class RunbotBuild(models.Model):
     _inherit = 'runbot.build'
-    active = fields.Boolean(related='repo_id.active', store=True)
 
     @api.multi
     def checkout(self):
