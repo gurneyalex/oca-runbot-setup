@@ -14,5 +14,6 @@ Scenario: install modules
   | runbot-oca        |
   | runbot_secure     |
   | runbot_skip_tests |
+  | runbot            |
 
 
