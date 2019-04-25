@@ -1,0 +1,20 @@
+[submodule "parts/odoo-extra"]
+	path = parts/odoo-extra
+	url = git@github.com:gurneyalex/odoo-extra.git
+	branch = OCA-runbot
+[submodule "parts/runbot-addons"]
+	path = parts/runbot-addons
+	url = git@github.com:gurneyalex/runbot-addons
+	branch = 9.0-OCA-installation
+[submodule "parts/server-tools"]
+	path = parts/server-tools
+	url = git@github.com:OCA/server-tools
+	branch = 9.0
+[submodule "parts/website"]
+	path = parts/website
+	url = git@github.com:OCA/website
+	branch = 9.0
+[submodule "parts/server"]
+	path = parts/server
+	url = git@github.com:OCA/ocb
+	branch = 9.0
