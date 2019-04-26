@@ -53,7 +53,6 @@ docs/_build/
 *.swp
 
 auto-run
-parts/*
 Scenario/OERPScenario
 sandbox
 src/*
