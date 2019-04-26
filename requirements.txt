@@ -20,8 +20,8 @@ fs==0.5.4
 future==0.17.1
 gdata==2.0.18
 geojson==1.0.9
-gevent==1.0.1
-greenlet==0.4.6
+gevent==1.2.2
+greenlet==0.4.15
 idna==2.7
 ipaddress==1.0.22
 Jinja2==2.10.1
