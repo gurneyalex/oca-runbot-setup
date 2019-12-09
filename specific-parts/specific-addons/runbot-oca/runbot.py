@@ -68,8 +68,8 @@ class RunbotBranch(models.Model):
                         branch.mig_pull_head_name = pi['head']['label']
                 if pi.get('head'):
                     branch.mig_branch_url = pi['head'].get('ref', '')
-                _logger.info('Branch %s, branch_name %s, target_branch_name %s, pull_head_name %s, pull_url %s',
-                             branch.name, branch.mig_branch_name, branch.mig_target_branch_name, branch.mig_pull_head_name, branch.mig_pull_url)
+                _logger.info('Branch %s, branch_name %s, target_branch_name %s, pull_head_name %s, branch_url %s',
+                             branch.name, branch.mig_branch_name, branch.mig_target_branch_name, branch.mig_pull_head_name, branch.mig_branch_url)
 
     @api.model
     def cron_branch_info(self):
