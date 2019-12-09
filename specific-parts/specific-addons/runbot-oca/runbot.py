@@ -1,6 +1,7 @@
 import os
 import os.path as osp
 import logging
+import re
 
 import openerp
 from openerp import http, SUPERUSER_ID
