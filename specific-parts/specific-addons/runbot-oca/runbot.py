@@ -47,6 +47,31 @@ class RunbotBranch(models.Model):
 
     repo_name = fields.Char(string='Repo Name',
                             related='repo_id.name')
+    branch_name = fields.Char(string='Branch', readonly=1,)
+    branch_url = fields.Char(string='Branch url')
+    pull_head_name = fields.Char(string='PR HEAD name', readonly=1,)
+    target_branch_name = fields.Char(string='PR target branch', readonly=1)
+
+    def _get_branch_infos(self):
+        """compute branch_name, branch_url, pull_head_name and target_branch_name based on name"""
+        tot = len(self)
+        count = 0
+        for i, branch in enumerate(self):
+            if branch.name:
+                _logger.info('[%d/%d] get branch info for %s %s', i+1, tot, branch.repo_id.name, branch.name)
+                branch.branch_name = branch.name.split('/')[-1]
+                pi = branch._get_pull_info()
+                if pi:
+                    branch.target_branch_name = pi['base']['ref']
+                    if pi['head']['label'] and not _re_patch.match(pi['head']['label']):
+                        # label is used to disambiguate PR with same branch name
+                        branch.pull_head_name = pi['head']['label']
+
+    @api.model
+    def cron_branch_info(self):
+        branches = self.search([('branch_name', '=', False)], limit=500, order='id DESC')
+        branches._get_branch_infos()
+        return True
 
 
 class RunbotBuild(models.Model):
