@@ -54,6 +54,7 @@ class RunbotBranch(models.Model):
 
     def _get_branch_infos(self):
         """compute branch_name, branch_url, pull_head_name and target_branch_name based on name"""
+        _re_patch = re.compile(r'.*patch-\d+$')
         tot = len(self)
         count = 0
         for i, branch in enumerate(self):
