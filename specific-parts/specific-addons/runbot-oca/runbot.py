@@ -63,7 +63,7 @@ class RunbotBranch(models.Model):
                 pi = branch._get_pull_info()
                 if pi:
                     branch.mig_target_branch_name = pi['base']['ref']
-                    if pi['head']['label'] and not _re_patch.match(pi['head']['label']):
+                    if pi['head'] and pi['head']['label'] and not _re_patch.match(pi['head']['label']):
                         # label is used to disambiguate PR with same branch name
                         branch.mig_pull_head_name = pi['head']['label']
                 branch.mig_branch_url = pi['head']['ref']
