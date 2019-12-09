@@ -47,10 +47,10 @@ class RunbotBranch(models.Model):
 
     repo_name = fields.Char(string='Repo Name',
                             related='repo_id.name')
-    branch_name = fields.Char(string='Branch', readonly=1,)
-    branch_url = fields.Char(string='Branch url')
-    pull_head_name = fields.Char(string='PR HEAD name', readonly=1,)
-    target_branch_name = fields.Char(string='PR target branch', readonly=1)
+    mig_target_branch_name = fields.Char(string='PR target branch', readonly=1)
+    mig_branch_name = fields.Char('MIG branch name')
+    mig_pull_head_name = fields.Char('MIG pull head name')
+    mig_branch_url = fields.Char('MIG branch url')
 
     def _get_branch_infos(self):
         """compute branch_name, branch_url, pull_head_name and target_branch_name based on name"""
@@ -59,18 +59,21 @@ class RunbotBranch(models.Model):
         for i, branch in enumerate(self):
             if branch.name:
                 _logger.info('[%d/%d] get branch info for %s %s', i+1, tot, branch.repo_id.name, branch.name)
-                branch.branch_name = branch.name.split('/')[-1]
+                branch.mig_branch_name = branch.name.split('/')[-1]
                 pi = branch._get_pull_info()
                 if pi:
-                    branch.target_branch_name = pi['base']['ref']
+                    branch.mig_target_branch_name = pi['base']['ref']
                     if pi['head']['label'] and not _re_patch.match(pi['head']['label']):
                         # label is used to disambiguate PR with same branch name
-                        branch.pull_head_name = pi['head']['label']
+                        branch.mig_pull_head_name = pi['head']['label']
+                branch.mig_branch_url = pi['head']['ref']
+                _logger.info('Branch %s, branch_name %s, target_branch_name %s, pull_head_name %s, pull_url %s',
+                             branch.name, branch.mig_branch_name, branch.mig_target_branch_name, branch.mig_pull_head_name, branch.mig_pull_url)
 
     @api.model
     def cron_branch_info(self):
         _logger.warning('update branch info cron')
-        branches = self.search([('branch_name', '=', False)], limit=500, order='id DESC')
+        branches = self.search([('target_branch_name', '=', False)], limit=500, order='id DESC')
         branches._get_branch_infos()
         _logger.warning('end update branch info cron')
         return True
