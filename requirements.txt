@@ -9,7 +9,7 @@ PyWebDAV==0.9.8
 PyYAML==3.10
 Shapely==1.5.8
 Unidecode==0.4.17
-Werkzeug==0.9.6
+Werkzeug==0.15.3
 argparse==1.2.1
 backports.ssl-match-hostname==3.4.0.2
 certifi==14.5.14
