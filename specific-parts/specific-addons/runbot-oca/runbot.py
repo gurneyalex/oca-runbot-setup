@@ -73,7 +73,7 @@ class RunbotBranch(models.Model):
     @api.model
     def cron_branch_info(self):
         _logger.warning('update branch info cron')
-        branches = self.search([('target_branch_name', '=', False)], limit=500, order='id DESC')
+        branches = self.search([('mig_target_branch_name', '=', False)], limit=500, order='id DESC')
         branches._get_branch_infos()
         _logger.warning('end update branch info cron')
         return True
