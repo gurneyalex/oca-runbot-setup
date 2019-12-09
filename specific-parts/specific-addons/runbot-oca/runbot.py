@@ -1,6 +1,7 @@
 import os
 import os.path as osp
 import logging
+import re
 
 import openerp
 from openerp import http, SUPERUSER_ID
@@ -47,6 +48,38 @@ class RunbotBranch(models.Model):
 
     repo_name = fields.Char(string='Repo Name',
                             related='repo_id.name')
+    mig_target_branch_name = fields.Char(string='PR target branch', readonly=1)
+    mig_branch_name = fields.Char('MIG branch name')
+    mig_pull_head_name = fields.Char('MIG pull head name')
+    mig_branch_url = fields.Char('MIG branch url')
+
+    def _get_branch_infos(self):
+        """compute branch_name, branch_url, pull_head_name and target_branch_name based on name"""
+        _re_patch = re.compile(r'.*patch-\d+$')
+        tot = len(self)
+        count = 0
+        for i, branch in enumerate(self):
+            if branch.name:
+                _logger.info('[%d/%d] get branch info for %s %s', i+1, tot, branch.repo_id.name, branch.name)
+                branch.mig_branch_name = branch.name.split('/')[-1]
+                pi = branch._get_pull_info()
+                if pi:
+                    branch.mig_target_branch_name = pi['base']['ref']
+                    if pi.get('head') and pi['head'].get('label') and not _re_patch.match(pi['head']['label']):
+                        # label is used to disambiguate PR with same branch name
+                        branch.mig_pull_head_name = pi['head']['label']
+                if pi.get('head'):
+                    branch.mig_branch_url = pi['head'].get('ref', '')
+                _logger.info('Branch %s, branch_name %s, target_branch_name %s, pull_head_name %s, branch_url %s',
+                             branch.name, branch.mig_branch_name, branch.mig_target_branch_name, branch.mig_pull_head_name, branch.mig_branch_url)
+
+    @api.model
+    def cron_branch_info(self):
+        _logger.warning('update branch info cron')
+        branches = self.search([('mig_target_branch_name', '=', False)], limit=500, order='id DESC')
+        branches._get_branch_infos()
+        _logger.warning('end update branch info cron')
+        return True
 
 
 class RunbotBuild(models.Model):
