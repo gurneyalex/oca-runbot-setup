@@ -6,7 +6,7 @@ MarkupSafe==0.23
 Pillow==2.5.3
 PyChart==1.39
 PyWebDAV==0.9.8
-PyYAML==3.10
+PyYAML==5.1
 Shapely==1.5.8
 Unidecode==0.4.17
 Werkzeug==0.9.6
