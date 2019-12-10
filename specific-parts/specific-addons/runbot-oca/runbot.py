@@ -71,14 +71,14 @@ class RunbotBranch(models.Model):
                         branch.mig_pull_head_name = pi['head']['label']
                 if pi.get('head'):
                     branch.mig_branch_url = pi['head'].get('ref', '')
-                branch.mig_seen = fields.Datetime.now()
+                branch.mig_processed = fields.Datetime.now()
                 _logger.info('Branch %s, branch_name %s, target_branch_name %s, pull_head_name %s, branch_url %s',
                              branch.name, branch.mig_branch_name, branch.mig_target_branch_name, branch.mig_pull_head_name, branch.mig_branch_url)
 
     @api.model
     def cron_branch_info(self):
         _logger.warning('update branch info cron')
-        branches = self.search([('mig_seen', '=', False)], limit=50, order='id DESC')
+        branches = self.search([('mig_processed', '=', False)], limit=50, order='id DESC')
         branches._get_branch_infos()
         _logger.warning('end update branch info cron')
         return True
