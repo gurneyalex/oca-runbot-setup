@@ -9,7 +9,7 @@ def fqdn():
 
 orig_runbot_common.fqdn = fqdn
 
-orig_runbot_models_repo.fqdn = fqdn
-orig_runbot_models_build.fqdn = fqdn
+orig_runbot_repo.fqdn = fqdn
+orig_runbot_build.fqdn = fqdn
 
 from . import runbot
