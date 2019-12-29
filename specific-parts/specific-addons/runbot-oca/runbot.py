@@ -1,45 +1,56 @@
 import os
 import os.path as osp
 import logging
+import re
+import subprocess
 
-import openerp
-from openerp import http, SUPERUSER_ID
-from openerp.http import request
-from openerp.osv import orm
-from openerp import fields, models, api
-from openerp.tools import config, appdirs
+from odoo import models, fields
+from odoo.tools import config
+from odoo.modules.module import get_module_resource
 
-from openerp.addons.runbot.runbot import mkdirs, run, fqdn
+from odoo.addons.runbot.common import fqdn
 _logger = logging.getLogger(__name__)
 
 
-class RunbotRepo(orm.Model):
+class RunbotRepo(models.Model):
     _inherit = "runbot.repo"
 
-    def reload_nginx(self, cr, uid, context=None):
+    active = fields.Boolean(default=True)
+
+    def _reload_nginx(self):
         """
         completely override the method
         """
         settings = {}
-        settings['port'] = config['xmlrpc_port']
-        nginx_dir = os.path.join(self.root(cr, uid), 'nginx')
+        settings['port'] = config['http_port']
+        settings['runbot_static'] = os.path.join(
+            get_module_resource('runbot', 'static'), ''
+        )
+        nginx_dir = os.path.join(self._root(), 'nginx')
         settings['nginx_dir'] = nginx_dir
-        ids = self.search(cr, uid, [('nginx','=',True)], order='id')
-        if ids:
-            build_ids = self.pool['runbot.build'].search(cr, uid, [('repo_id','in',ids), ('state','=','running')])
-            settings['builds'] = self.pool['runbot.build'].browse(cr, uid, build_ids)
+        settings['re_escape'] = re.escape
+        settings['fqdn'] = fqdn()
+        nginx_repos = self.search([('nginx', '=', True)], order='id')
+        if nginx_repos:
+            builds = self.env['runbot.build'].search(
+                [
+                    ('repo_id', 'in', nginx_repos.ids),
+                    ('state', '=', 'running'),
+                    ('host', '=', fqdn()),
+                ]
+            )
+            settings['builds'] = builds
 
-            nginx_config = self.pool['ir.ui.view'].render(cr, uid, "runbot.nginx_config", settings)
-            mkdirs([nginx_dir])
-            open(os.path.join(nginx_dir, 'nginx.conf'),'w').write(nginx_config)
+            nginx_config = self.env['ir.ui.view'].render_template(
+                "runbot.nginx_config", settings
+            )
+            os.makedirs(nginx_dir, exist_ok=True)
+            open(
+                os.path.join(nginx_dir, 'nginx.conf'), 'wb'
+            ).write(nginx_config)
             _logger.debug('reload nginx')
-            run(['sudo', '/usr/sbin/service', 'nginx', 'reload'])
-
-    def cron(self, cr, uid, ids=None, context=None):
-        if fqdn() == 'runbot.odoo-communty.org':
-            # phase out builds on main server
-            return
-        return super(RunbotRepo, self).cron(cr, uid, ids, context=context)
+            subprocess.call(['sudo', '/usr/sbin/service', 'nginx', 'reload'])
+            #_logger.warn('RELOAD NGINX!')
 
 
 class RunbotBranch(models.Model):
@@ -52,9 +63,8 @@ class RunbotBranch(models.Model):
 class RunbotBuild(models.Model):
     _inherit = 'runbot.build'
 
-    @api.multi
-    def checkout(self):
-        super(RunbotBuild, self).checkout()
+    def _checkout(self):
+        super(RunbotBuild, self)._checkout()
         for build in self:
             dirname = osp.join(build.server('addons'),
                                'server_environment_files_sample')

@@ -21,3 +21,6 @@
 [submodule "parts/runbot"]
 	path = parts/runbot
 	url = git@github.com:odoo/runbot
+[submodule "parts/server-ux"]
+	path = parts/server-ux
+	url = https://github.com/OCA/server-ux

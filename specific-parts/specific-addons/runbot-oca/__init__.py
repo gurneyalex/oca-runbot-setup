@@ -1,5 +1,5 @@
-from openerp.addons.runbot import runbot as orig_runbot
-from openerp.tools import config
+from odoo.addons.runbot import common as orig_runbot
+from odoo.tools import config
 import socket
 
 def fqdn():

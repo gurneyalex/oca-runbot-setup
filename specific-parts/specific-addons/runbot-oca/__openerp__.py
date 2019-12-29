@@ -41,6 +41,7 @@ Alexandre Fayolle <alexandre.fayolle@camptocamp.com>
     'depends': ['runbot'],
     'data': [
         'runbot_qweb.xml',
+        'runbot_repo.xml'
     ],
     'installable': True,
 }
