@@ -32,7 +32,6 @@ numpy==1.17.4
 OdooRPC==0.6.0
 ofxparse==0.16
 olefile==0.46
-openupgradelib==3.0.0
 paramiko==2.6.0
 passlib==1.6.5
 pbr==5.4.4
