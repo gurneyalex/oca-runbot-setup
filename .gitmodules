@@ -1,7 +1,3 @@
-[submodule "parts/odoo-extra"]
-	path = parts/odoo-extra
-	url = git@github.com:gurneyalex/odoo-extra.git
-	branch = OCA-runbot
 [submodule "parts/runbot-addons"]
 	path = parts/runbot-addons
 	url = git@github.com:gurneyalex/runbot-addons
